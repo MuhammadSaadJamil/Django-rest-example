@@ -1,0 +1,1 @@
+# Django Rest Framework Simple CRUD example
