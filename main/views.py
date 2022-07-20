@@ -1,14 +1,22 @@
 from django.shortcuts import render
+from rest_framework import generics
 from rest_framework.generics import *
 from .serializer import ObjectSerializer
 from .models import *
 
 
-class CreateObject(CreateAPIView):
+class CreateListObject(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = Object.objects.all()
     serializer_class = ObjectSerializer
 
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
-create_object = CreateObject.as_view()
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+create_list_object = CreateListObject.as_view()
 
 
 class HandleObject(RetrieveUpdateDestroyAPIView):
@@ -17,11 +25,3 @@ class HandleObject(RetrieveUpdateDestroyAPIView):
 
 
 handle_object = HandleObject.as_view()
-
-
-class ListObject(ListAPIView):
-    serializer_class = ObjectSerializer
-    queryset = Object.objects.all()
-
-
-list_object = ListObject.as_view()
