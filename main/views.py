@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.generics import *
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializer import *
 from .models import *
@@ -31,6 +32,7 @@ create_list_object = CreateListObject.as_view()
 class HandleObject(RetrieveUpdateDestroyAPIView):
     serializer_class = ObjectSerializer
     queryset = Object.objects.all()
+    permission_classes = [IsAuthenticated, ]
 
     def get(self, request, *args, **kwargs):
         data = Object.objects.get(id=kwargs['pk'])
@@ -39,3 +41,28 @@ class HandleObject(RetrieveUpdateDestroyAPIView):
 
 
 handle_object = HandleObject.as_view()
+
+User = get_user_model()
+
+
+class RegisterUser(mixins.CreateModelMixin, generics.GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = UserCreateSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        data = self.serializer_class(data=request.data)
+        if data.is_valid():
+            user = data.save()
+            refresh = RefreshToken.for_user(user)
+            res = {
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            }
+            return Response(res)
+        return Response(data.errors)
+
+
+register_user = RegisterUser.as_view()

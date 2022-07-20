@@ -15,13 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from rest_framework_swagger.views import get_swagger_view
+
 from main.views import *
 from rest_framework_simplejwt import views as jwt_views
 
+schema_view = get_swagger_view(title="Object API")
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('object/<int:pk>', handle_object),
-    path('object', create_list_object),
+    path('api/object/<int:pk>', handle_object, name='retrieve-object'),
+    path('api/object/', create_list_object),
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/register', register_user, name='register-user'),
+    path('api/docs/', schema_view),
 ]
