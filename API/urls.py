@@ -39,7 +39,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    re_path(r'^/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('api/object/<int:pk>', handle_object, name='retrieve-object'),
     path('api/object/', create_list_object),
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
