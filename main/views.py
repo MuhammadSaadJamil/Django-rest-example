@@ -1,6 +1,8 @@
 from django.shortcuts import render
-from rest_framework import generics, viewsets, routers
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics, viewsets, routers, filters
 from rest_framework.generics import *
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination, CursorPagination
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -68,9 +70,20 @@ class RegisterUser(mixins.CreateModelMixin, generics.GenericAPIView):
 register_user = RegisterUser.as_view()
 
 
+class Paginator(CursorPagination):
+    ordering = 'id'
+
+
 class ContactViewSet(viewsets.ModelViewSet):
     queryset = Contact.objects.all()
     serializer_class = ContactSerializer
+    # pagination_class = Paginator
+    pagination_class = LimitOffsetPagination
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['name', 'phone']
+    search_fields = ['name', 'phone']
+    ordering_fields = ['name', 'phone']
+    # pagination_class = PageNumberPagination
     # permission_classes = [IsAuthenticated,]
 
 
