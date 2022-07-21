@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import generics
+from rest_framework import generics, viewsets, routers
 from rest_framework.generics import *
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -22,7 +22,7 @@ class CreateListObject(mixins.ListModelMixin, mixins.CreateModelMixin, generics.
 
     def list(self, request, *args, **kwargs):
         data = Object.objects.all()
-        data = RelatedObjectSerializer(data, many=True)
+        data = RelatedObjectSerializer(data, many=True, context={'request': request})
         return Response(data.data)
 
 
@@ -66,3 +66,12 @@ class RegisterUser(mixins.CreateModelMixin, generics.GenericAPIView):
 
 
 register_user = RegisterUser.as_view()
+
+
+class ContactViewSet(viewsets.ModelViewSet):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+
+
+contact_router = routers.DefaultRouter()
+contact_router.register(r'contact', ContactViewSet)
