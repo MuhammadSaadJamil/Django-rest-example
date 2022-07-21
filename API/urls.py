@@ -46,5 +46,6 @@ urlpatterns = [
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('api/register', register_user, name='register-user'),
     path('api/', include(contact_router.urls)),
+    path('api/', include(contact_book_router.urls)),
 
 ]

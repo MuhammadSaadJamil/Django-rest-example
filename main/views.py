@@ -71,7 +71,17 @@ register_user = RegisterUser.as_view()
 class ContactViewSet(viewsets.ModelViewSet):
     queryset = Contact.objects.all()
     serializer_class = ContactSerializer
+    # permission_classes = [IsAuthenticated,]
 
 
 contact_router = routers.DefaultRouter()
 contact_router.register(r'contact', ContactViewSet)
+
+
+class ContactBookViewSet(viewsets.ModelViewSet):
+    queryset = ContactBook.objects.all()
+    serializer_class = ContactBookSerializer
+
+
+contact_book_router = routers.DefaultRouter()
+contact_book_router.register(r'contact-book', ContactBookViewSet)

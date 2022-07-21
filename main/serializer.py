@@ -48,4 +48,11 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class ContactSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Contact
-        fields = ['id', 'url', 'name', 'phone']
+        fields = ['id', 'url', 'name', 'phone', 'book']
+
+
+class ContactBookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactBook
+        fields = "__all__"
+
